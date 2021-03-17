@@ -8,6 +8,8 @@ using System.Data.SqlClient;
 using System.Data;
 using WebAPI.Models;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace WebAPI.Controllers
 {
@@ -16,10 +18,12 @@ namespace WebAPI.Controllers
 	public class EmployeeController : ControllerBase
 	{
 		private readonly IConfiguration configuration;
+		private readonly IWebHostEnvironment webHostEnvironment;
 
-		public EmployeeController(IConfiguration configuration)
+		public EmployeeController(IConfiguration configuration,IWebHostEnvironment webHostEnvironment)
 		{
 			this.configuration = configuration;
+			this.webHostEnvironment = webHostEnvironment;
 		}
 
 		[HttpGet]
@@ -120,5 +124,53 @@ namespace WebAPI.Controllers
 			}
 			return new JsonResult("Data Deleted Successfully");
 		}
+
+		[Route("SaveFile")]
+		[HttpPost]
+		public JsonResult SaveFile()
+		{
+			try
+			{
+				var httpRequest = Request.Form;
+				var postedFile = httpRequest.Files[0];
+				string filename = postedFile.FileName;
+				var physicalPath = webHostEnvironment.ContentRootPath + "/Photos/" + filename;
+				using (var stream = new FileStream(physicalPath,FileMode.Create))
+				{
+					postedFile.CopyTo(stream);
+				}
+				return new JsonResult(filename + " uploaded successfully");
+
+			}
+			catch(Exception)
+			{
+				return new JsonResult("anonymous.png");
+			}
+
+		}
+
 	}
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
