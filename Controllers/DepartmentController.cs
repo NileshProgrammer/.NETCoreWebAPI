@@ -113,6 +113,28 @@ namespace WebAPI.Controllers
 			}
 			return new JsonResult("Data Deleted Successfully");
 		}
-
+		
+		
+		[Route("GetAllDepartment")]
+		public JsonResult GetAllDepartment()
+		{
+			string query = @"
+							select departmentName from department";
+			DataTable dT = new DataTable();
+			string sqlDataSource = configuration.GetConnectionString("EmployeeAppCon");
+			SqlDataReader dataReader;
+			using (SqlConnection connection = new SqlConnection(sqlDataSource))
+			{
+				connection.Open();
+				using (SqlCommand sqlCommand = new SqlCommand(query, connection))
+				{
+					dataReader = sqlCommand.ExecuteReader();
+					dT.Load(dataReader);
+					dataReader.Close();
+					connection.Close();
+				}
+			}
+			return new JsonResult(dT);
+		}
 	}
 }
