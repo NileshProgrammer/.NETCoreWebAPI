@@ -139,7 +139,7 @@ namespace WebAPI.Controllers
 				{
 					postedFile.CopyTo(stream);
 				}
-				return new JsonResult(filename + " uploaded successfully");
+				return new JsonResult(filename);
 
 			}
 			catch(Exception)
