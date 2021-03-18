@@ -30,7 +30,7 @@ namespace WebAPI.Controllers
 		public JsonResult Get()
 		{
 			string query = @"
-							select * from employee";
+							select employeeId,employeeName,department,convert(varchar,dateOfJoining,23) as dateOfJoining,photoFileName from employee";
 			DataTable dT = new DataTable();
 			string sqlDataSource = configuration.GetConnectionString("EmployeeAppCon");
 			SqlDataReader dataReader;
